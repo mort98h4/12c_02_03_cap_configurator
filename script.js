@@ -20,32 +20,50 @@ function start() {
 function toggleOption(event) {
   const target = event.currentTarget;
   const feature = target.dataset.feature;
+  const list = document.querySelector("#selected ul");
 
-  // TODO: Toggle feature in "model"
-
-  // If feature is (now) turned on:
-  // - mark target as chosen (add class "chosen")
-  // - un-hide the feature-layer(s) in the #product-preview;
-  // - create featureElement and append to #selected ul
-  // - create FLIP-animation to animate featureElement from img in target, to
-  //   its intended position. Do it with normal animation or transition class!
-
-  // Else - if the feature (became) turned off:
-  // - no longer mark target as chosen
-  // - hide the feature-layer(s) in the #product-preview
-  // - find the existing featureElement in #selected ul
-  // - create FLIP-animation to animate featureElement to img in target
-  // - when animation is complete, remove featureElement from the DOM
+  // Toggle feature in "model"
+  if (features[feature]) {
+    features[feature] = false;
+  } else {
+    features[feature] = true;
+  }
   
   if (features[feature]) {
     // feature added
     console.log(`Feature ${feature} is turned on!`);
+    // If feature is (now) turned on:
+    // - mark target as chosen (add class "chosen")
+    target.classList.add("chosen");
+    // - un-hide the feature-layer(s) in the #product-preview;
+    document.querySelectorAll(`#product-preview [data-feature=${feature}]`).forEach(layer => {
+      layer.classList.remove("hide");
+    });
+    // - create featureElement and append to #selected ul
+    const chosenFeature = createFeatureElement(feature);
+    console.log(chosenFeature);
+    list.append(chosenFeature);
+    // - create FLIP-animation to animate featureElement from img in target, to
+    //   its intended position. Do it with normal animation or transition class!
 
     // TODO: More code
 
   } else {
     // feature removed
     console.log(`Feature ${feature} is turned off!`);
+
+    // Else - if the feature (became) turned off:
+    // - no longer mark target as chosen
+    target.classList.remove("chosen");
+    // - hide the feature-layer(s) in the #product-preview
+    document.querySelectorAll(`#product-preview [data-feature=${feature}]`).forEach(layer => {
+      layer.classList.add("hide");
+    });
+    // - find the existing featureElement in #selected ul
+    const removeFeature = document.querySelector(`#selected [data-feature=${feature}]`);
+    // - create FLIP-animation to animate featureElement to img in target
+    // - when animation is complete, remove featureElement from the DOM
+    list.removeChild(removeFeature);
     
     // TODO: More code
 
