@@ -21,6 +21,7 @@ function toggleOption(event) {
   const target = event.currentTarget;
   const feature = target.dataset.feature;
   const list = document.querySelector("#selected ul");
+  console.log(feature);
 
   // Toggle feature in "model"
   if (features[feature]) {
@@ -45,7 +46,20 @@ function toggleOption(event) {
     list.append(chosenFeature);
     // - create FLIP-animation to animate featureElement from img in target, to
     //   its intended position. Do it with normal animation or transition class!
-
+    const start = document.querySelector(`#options [data-feature=${feature}]`).getBoundingClientRect();
+    const end = chosenFeature.getBoundingClientRect();
+    console.log(start);
+    console.log(end);
+    const diffX = start.x - end.x;
+    console.log("diffX: ", diffX);
+    const diffY = start.y - end.y;
+    console.log("diffY: ", diffY);
+    chosenFeature.style.transform = `translate(${diffX}px, ${diffY}px)`;
+    chosenFeature.offsetHeight;
+    requestAnimationFrame(function() {
+      chosenFeature.style.transition = "transform 3s";
+      chosenFeature.style.transform = "translate(0,0)";
+    })
     // TODO: More code
 
   } else {
@@ -63,7 +77,28 @@ function toggleOption(event) {
     const removeFeature = document.querySelector(`#selected [data-feature=${feature}]`);
     // - create FLIP-animation to animate featureElement to img in target
     // - when animation is complete, remove featureElement from the DOM
-    list.removeChild(removeFeature);
+    const start = removeFeature.getBoundingClientRect();
+    console.log("start: ", start);
+    const end = document.querySelector(`#options [data-feature=${feature}]`).getBoundingClientRect();
+    console.log("end: ", end);
+    const diffX = end.x - start.x;
+    const diffY = end.y - start.y;
+    console.log("diffX: ", diffX);
+    console.log("diffY: ", diffY);
+    removeFeature.style.transform = "translate(0,0)";
+
+    removeFeature.offsetHeight;
+    requestAnimationFrame(function() {
+      removeFeature.style.transition = "transform 3s";
+      removeFeature.style.transform = `translate(${diffX}px, ${diffY}px)`;
+      setTimeout(removeThisFeature, 3000);
+      //removeFeature.addEventListener("animationiteration", removeThisFeature);
+    })
+    function removeThisFeature() {
+      //removeFeature.removeEventListener("animationiteration", removeThisFeature);
+      list.removeChild(removeFeature);
+    }
+    
     
     // TODO: More code
 
