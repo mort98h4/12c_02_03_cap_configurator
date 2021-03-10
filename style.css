@@ -89,10 +89,32 @@
 /* Animation classes */
 
 .animate-feature-in {
-  /* TODO: Create animation for adding a feature */
-  
+  animation: animate-in 3s ease-in-out;
+}
+
+@keyframes animate-in {
+  0% {
+    opacity: 0;
+    transform: translate(calc(var(--diffX) * 1px), calc(var(--diffY) * 1px));
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(0,0);
+  }
 }
 
 .animate-feature-out {
-  /* TODO: Create animation for removing a feature */
+  animation: animate-out 3s ease-in-out;
+}
+
+@keyframes animate-out {
+  0% {
+    transform: translate(0,0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--diffX) * 1px), calc(var(--diffY) * 1px));
+  }
 }

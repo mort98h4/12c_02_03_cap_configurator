@@ -33,30 +33,36 @@ function toggleOption(event) {
   if (features[feature]) {
     // feature added
     console.log(`Feature ${feature} is turned on!`);
+
     // If feature is (now) turned on:
     // - mark target as chosen (add class "chosen")
     target.classList.add("chosen");
+
     // - un-hide the feature-layer(s) in the #product-preview;
     document.querySelectorAll(`#product-preview [data-feature=${feature}]`).forEach(layer => {
       layer.classList.remove("hide");
     });
+
     // - create featureElement and append to #selected ul
     const chosenFeature = createFeatureElement(feature);
     list.append(chosenFeature);
+
     // - create FLIP-animation to animate featureElement from img in target, to
     //   its intended position. Do it with normal animation or transition class!
+
+    // Find the start position
     const start = document.querySelector(`#options [data-feature=${feature}]`).getBoundingClientRect();
+    // Find the end position
     const end = chosenFeature.getBoundingClientRect();
+    // Translate the element to the start position
     const diffX = start.x - end.x;
     const diffY = start.y - end.y;
+    chosenFeature.style.setProperty("--diffX", diffX);
+    chosenFeature.style.setProperty("--diffY", diffY);
+    
+    // Animate the element
+    chosenFeature.classList.add("animate-feature-in");
 
-    chosenFeature.style.transform = `translate(${diffX}px, ${diffY}px)`;
-    chosenFeature.offsetHeight;
-
-    requestAnimationFrame(function() {
-      chosenFeature.style.transition = "transform 3s";
-      chosenFeature.style.transform = "translate(0,0)";
-    })
   } else {
     // feature removed
     console.log(`Feature ${feature} is turned off!`);
@@ -64,36 +70,36 @@ function toggleOption(event) {
     // Else - if the feature (became) turned off:
     // - no longer mark target as chosen
     target.classList.remove("chosen");
+
     // - hide the feature-layer(s) in the #product-preview
     document.querySelectorAll(`#product-preview [data-feature=${feature}]`).forEach(layer => {
       layer.classList.add("hide");
     });
+
     // - find the existing featureElement in #selected ul
     const removeFeature = document.querySelector(`#selected [data-feature=${feature}]`);
+    
     // - create FLIP-animation to animate featureElement to img in target
     // - when animation is complete, remove featureElement from the DOM
+
+    // Find the start position
     const start = removeFeature.getBoundingClientRect();
+    // Find the end position
     const end = document.querySelector(`#options [data-feature=${feature}]`).getBoundingClientRect();
+    // Calculate the translation
     const diffX = end.x - start.x;
     const diffY = end.y - start.y;
-
-    removeFeature.style.transform = "translate(0,0)";
-    removeFeature.offsetHeight;
+    removeFeature.style.setProperty("--diffX", diffX);
+    removeFeature.style.setProperty("--diffY", diffY);
+    // Animate the element
+    removeFeature.classList.add("animate-feature-out");
+    removeFeature.addEventListener("animationend", removeThisFeature);
     
-    requestAnimationFrame(function() {
-      removeFeature.style.transition = "transform 3s";
-      removeFeature.style.transform = `translate(${diffX}px, ${diffY}px)`;
-      setTimeout(removeThisFeature, 3000);
-      //removeFeature.addEventListener("animationiteration", removeThisFeature);
-    })
+    // Remove the element from the DOM
     function removeThisFeature() {
-      //removeFeature.removeEventListener("animationiteration", removeThisFeature);
+      removeFeature.removeEventListener("animationend", removeThisFeature);
       list.removeChild(removeFeature);
     }
-    
-    
-    // TODO: More code
-
   }
 }
 
